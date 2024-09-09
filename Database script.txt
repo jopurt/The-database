@@ -1,0 +1,106 @@
+
+/*
+DROP DATABASE IF EXISTS sport_club;
+
+CREATE DATABASE sport_club
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'Russian_Russia.1251'
+    LC_CTYPE = 'Russian_Russia.1251'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+*/
+
+DROP TABLE IF EXISTS achievement;
+DROP TABLE IF EXISTS student_section;
+DROP TABLE IF EXISTS sectionss;
+DROP TABLE IF EXISTS student;
+DROP TABLE IF EXISTS groupss;
+DROP TABLE IF EXISTS faculty;
+
+CREATE TABLE IF NOT EXISTS faculty (
+	full_name TEXT NOT NULL,
+	not_full_name TEXT NOT NULL,
+	ID_faculty INT NOT NULL,
+	PRIMARY KEY (ID_faculty)
+);
+
+
+CREATE TABLE IF NOT EXISTS groupss (
+	naimenovanie VARCHAR(25) NOT NULL,
+	ID_GROUP INT NOT NULL,
+	ID_faculty INT NOT NULL,
+	PRIMARY KEY (ID_GROUP),
+	FOREIGN KEY (ID_faculty) REFERENCES faculty ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS student (
+	second_name TEXT NOT NULL,
+	first_name TEXT NOT NULL,
+	third_name TEXT NOT NULL,
+	birth_date DATE,
+	ID_GROUP INT,
+	ID_STUDENT INT NOT NULL,
+	PRIMARY KEY (ID_STUDENT),
+	FOREIGN KEY (ID_GROUP) REFERENCES groupss ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS sectionss (
+	nazvanie TEXT NOT NULL,
+	trainer VARCHAR(25) NOT NULL,
+	ID_SECTION INT NOT NULL,
+	PRIMARY KEY (ID_SECTION)
+);
+
+CREATE TABLE IF NOT EXISTS student_section (
+	ID_STUDENT INT NOT NULL,
+	ID_SECTION INT NOT NULL,
+	ID_ACHIEVEMENT INT NOT NULL,
+	PRIMARY KEY (ID_ACHIEVEMENT)
+);
+ALTER TABLE student_section ADD CONSTRAINT student_section_fk0 FOREIGN KEY (ID_STUDENT) REFERENCES student(ID_STUDENT);
+ALTER TABLE student_section ADD CONSTRAINT student_section_fk1 FOREIGN KEY (ID_SECTION) REFERENCES sectionss(ID_SECTION);
+
+CREATE TABLE IF NOT EXISTS achievement (
+	etap TEXT NOT NULL,
+	data_ DATE NOT NULL,
+	results TEXT NOT NULL,
+	ID_ACHIEVEMENT INT NOT NULL,
+	PRIMARY KEY (ID_ACHIEVEMENT)
+);
+
+INSERT into faculty (full_name,not_full_name,ID_faculty)
+VALUES ('Информационные системы', 'ИТХ',11111),
+('Фундаментальная информатика', 'ФИТ',22222),
+('Прикладная математика', 'ПМИ',33333);
+
+INSERT into groupss (naimenovanie,ID_GROUP,ID_faculty)
+VALUES ('ИТХ-1-2022', 121212 , 11111),
+('ФИТ-1-2022', 131313 , 22222),
+('ПМИ-1-2022', 141414 ,33333);
+
+INSERT into student (second_name,first_name,third_name,birth_date,ID_GROUP,ID_STUDENT)
+VALUES ('Иванов','Иван','Иванович','2000-01-31', 121212 ,010101),
+('Бобров','Пётр','Степанович','2000-03-31', 121212 ,020202),
+('Булгаков', 'Александр', 'Геннадьевич','1990-02-11', 131313 ,030303),
+('Сумкин','Фёдор', 'Андреевич','1993-07-03',141414,040404);
+
+INSERT into sectionss (nazvanie,trainer,ID_SECTION)
+VALUES ('Баскетбол', 'Пастухов А.П.',919191),
+('Футбол', 'Роналду К.М.',929292),
+('Пауэрлифтинг', 'Кулибякин Н.Д.',939393);
+
+INSERT into student_section (ID_STUDENT,ID_SECTION,ID_ACHIEVEMENT)
+VALUES (010101, 919191,818181),
+(020202,929292,828282),
+(030303,939393,838383),
+(040404,939393,848484);
+
+INSERT into achievement (etap,data_,results,ID_ACHIEVEMENT)
+VALUES ('Муниципальный','2021-01-31','Призер',818181),
+('Краевой','2019-09-21','Участник',828282),
+('Муниципальный','1022-02-11','Участник',838383),
+('Региональный','2022-07-03','Победитель',848484);
+
